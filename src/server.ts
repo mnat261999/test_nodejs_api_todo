@@ -1,4 +1,5 @@
-require('dotenv').config()
+import * as dotenv from "dotenv";
+dotenv.config();
 var mysql = require('mysql');
 import "reflect-metadata";
 import { createConnection } from "typeorm";

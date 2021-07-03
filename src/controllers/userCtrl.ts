@@ -40,7 +40,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 export const activateEmail = async (req: Request, res: Response): Promise<Response> =>{
     const {activation_token} = req.body
     console.log(activation_token)
-    const user:any = jwt.verify(activation_token, '[ákfhsadjfhskjdfhsdkjfhsdkfjhsdfjsdk')
+    const user:any = jwt.verify(activation_token, <any>process.env.ACTIVATION_TOKEN_SECRET)
     console.log(user)
 
     const {name,email,password} = user
@@ -80,7 +80,7 @@ export const getAccessToken = async (req: Request, res: Response): Promise<Respo
     let access_token;
     const rf_token = req.cookies.refreshtoken
     if(!rf_token) return res.status(400).json({msg: 'Please login now!'})
-    jwt.verify(rf_token, '[áhfhsadjfhsjjdfhs3kjfhsdkfjhsdfjsdkgfdgdfgdfgfdgdfgfdgfdgdfgdfgdfgdfgdfgdfgd', (err:any, user:any) =>{
+    jwt.verify(rf_token, <any>process.env.REFRESH_TOKEN_SECRET, (err:any, user:any) =>{
         if(err){ return res.status(400).json({msg: 'Please login now!'})}
 
         access_token = createAccessToken({id: user.id})
@@ -100,13 +100,13 @@ function validatePass(pass: string) {
 
 const createActivationToken = (payload:object) => {
     console.log(payload)
-    return jwt.sign(payload,'[ákfhsadjfhskjdfhsdkjfhsdkfjhsdfjsdk', {expiresIn: '7d'})
+    return jwt.sign(payload,<any>process.env.ACTIVATION_TOKEN_SECRET, {expiresIn: '5m'})
 }
 
 const createAccessToken = (payload:object) => {
-    return jwt.sign(payload, 'h[áhfhsadjfhsjjdfhs3kbfhsdkfjhadfhsdkgfdxgfdgdfgdfgdfgfghfghfghfgewryiuwebcxz', {expiresIn: '1d'})
+    return jwt.sign(payload, <any>process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1d'})
 }
 
 const createRefreshToken = (payload:object) => {
-    return jwt.sign(payload, '[áhfhsadjfhsjjdfhs3kjfhsdkfjhsdfjsdkgfdgdfgdfgfdgdfgfdgfdgdfgdfgdfgdfgdfgdfgd', {expiresIn: '7d'})
+    return jwt.sign(payload,   <any>process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
 }

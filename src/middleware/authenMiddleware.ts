@@ -7,7 +7,7 @@ export const authen = async (req: Request, res: Response, next: NextFunction)=>{
     if(!token) return res.status(400).json({msg: "Invalid Authentication."})
     
 
-        jwt.verify(token, 'h[áhfhsadjfhsjjdfhs3kbfhsdkfjhadfhsdkgfdxgfdgdfgdfgdfgfghfghfghfgewryiuwebcxz', (err:any, user:any) => {
+        jwt.verify(token,<any>process.env.ACCESS_TOKEN_SECRET, (err:any, user:any) => {
             if(err) return res.status(400).json({msg: "Invalid Authentication."})
             req.user = user
             next()
