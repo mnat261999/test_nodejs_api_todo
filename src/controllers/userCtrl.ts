@@ -2,11 +2,10 @@ import { Request, Response } from "express"
 import { getRepository } from "typeorm"
 import {User} from "../entity/User"
 import jwt from "jsonwebtoken"
-import { get } from "http"
 import bcrypt from "bcrypt"
 import {sendEmail} from "./sendMailCtrl"
 
-
+/* Câu 1 */
 export const register = async (req: Request, res: Response): Promise<Response> =>{
     const {name, email, password} = req.body
 
@@ -22,11 +21,12 @@ export const register = async (req: Request, res: Response): Promise<Response> =
     if(!validatePass(password)) 
             return res.status(400).json({msg: "Password must be at least 8 characters, one letter and one number."})
 
+    /*Câu 10*/
     const passwordHash = await bcrypt.hash(password, 12)
-
     const newUser = {
         name, email, password: passwordHash
     }
+    /*******/
     const activation_token = createActivationToken(newUser)
     const url = `http://localhost:3000/user/activate/${activation_token}`
 
@@ -54,6 +54,9 @@ export const activateEmail = async (req: Request, res: Response): Promise<Respon
    return res.json({msg: "Account has been activated!"})
 }
 
+/**********************************************************/
+
+/*Câu 2*/
 export const login = async (req: Request, res: Response): Promise<Response> =>{
     const {email, password} = req.body
     const user:any = await getRepository(User).findOne({email})
@@ -71,6 +74,10 @@ export const login = async (req: Request, res: Response): Promise<Response> =>{
     return res.json({msg: "Login success!"})
 }
 
+/**********************************************************/
+
+
+/*Bonus fucntion */
 export const logout = async (req: Request, res: Response): Promise<Response> =>{
     res.clearCookie('refreshtoken', {path: '/user/refresh_token'})
     return res.json({msg: "Logout success!"})
@@ -88,10 +95,14 @@ export const getAccessToken = async (req: Request, res: Response): Promise<Respo
     return res.json({access_token})
 }
 
+/**********************************************************/
+
+/*Câu 8*/
 export const getAllUser = async (req: Request, res: Response): Promise<Response> =>{
     const userList = await getRepository(User).find()
     return res.json({userList})
 }
+/**********************************************************/
 
 function validateEmail(email:string) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

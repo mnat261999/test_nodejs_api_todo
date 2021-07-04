@@ -5,24 +5,25 @@ import {authen} from '../middleware/authenMiddleware'
 import jwt from "jsonwebtoken"
 import {getConnection} from "typeorm";
 
+/*Câu 3*/
 export const addTask = async (req: Request, res: Response): Promise<Response> =>{
-    const {nameTask, desTask, dateCompletedTask,statusTask,userIdAssingTask} = req.body
-    if(!nameTask || !desTask || !dateCompletedTask || !statusTask || !userIdAssingTask){
+    const {nameTask, desTask, dateCompletedTask,statusTask} = req.body
+    if(!nameTask || !desTask || !dateCompletedTask || !statusTask){
         return res.status(400).json({msg: "Please fill in all fields."})
     }
 
-    if(userIdAssingTask == req.user.id)
-    {
-        return res.status(400).json({msg: "Do not add yourself to the task"})
-    }
     const newTask = getRepository(Task).create({
-        nameTask, desTask, dateCompletedTask,statusTask,userIdAssingTask,userIdCreateTask:req.user.id
+        nameTask, desTask, dateCompletedTask,statusTask,userIdCreateTask:req.user.id
     })
 
     await getRepository(Task).save(newTask)
     return res.json({msg: "Add task success!"})
 }
 
+/**********************************************************/
+
+
+/*Câu 4*/
 export const updateTask = async (req: Request, res: Response): Promise<Response> =>{
     const id = req.params.id
     const task = await getRepository(Task).findOne(id)
@@ -38,7 +39,7 @@ export const updateTask = async (req: Request, res: Response): Promise<Response>
                 .createQueryBuilder()
                 .update(Task)
                 .set({ nameTask, desTask, dateCompletedTask,statusTask})
-                .where("idTask= :id", {id})
+                .where("idTask = :id", {id})
                 .execute();
             return res.json({msg: "Update success!"})
         } 
@@ -47,22 +48,75 @@ export const updateTask = async (req: Request, res: Response): Promise<Response>
     return res.json({msg: "You do not have permission to edit. You can only edit tasks created by you"})
 }
 
+/**********************************************************/
+
+/*Câu 5*/
 export const deleteTask = async (req: Request, res: Response): Promise<Response> => {
-    const id = req.params.id
-    const task = await getRepository(Task).findOne(id)
+    const idTask = req.params.id
+    const task = await getRepository(Task).findOne(idTask)
     if(!task) return res.json({msg: "Task does not exist"})
 
     await getRepository(Task).delete(req.params.id)
     return res.json({msg: "Delete success!"})
 }
+/**********************************************************/
 
+/*Câu 6*/
 export const getAllTask = async (req: Request, res: Response): Promise<Response> =>{
     const taskList = await getRepository(Task).find()
     return res.json({taskList})
 }
+/**********************************************************/
 
+/*Câu 7*/
 export const getTaskById = async (req: Request, res: Response): Promise<Response> =>{
     const id = req.params.id
     const taskById = await getRepository(Task).findOne(id)
+    if(!taskById) return res.json({msg: "Task does not exist"})
     return res.json({taskById})
 }
+/**********************************************************/
+
+/*Câu 9*/
+export const assignUser = async (req: Request, res: Response): Promise<Response> => {
+    
+    const id = req.params.id
+    const task = await getRepository(Task).findOne(id)
+    if(!task) return res.json({msg: "Task does not exist"})
+
+    if(task?.userIdCreateTask != req.user.id) return res.json({msg: "You do not have permission to specify the person to perform the task. You can only specify the person to perform the task created by you"})
+    const {userIdAssingTask} = req.body
+    if(userIdAssingTask == req.user.id) return res.status(400).json({msg: "Do not add yourself to the task"})
+
+    await getConnection()
+                .createQueryBuilder()
+                .update(Task)
+                .set({userIdAssingTask})
+                .where("idTask= :id", {id})
+                .execute();
+            return res.json({
+                msg: "Assign success!",
+                taskAfterAssignment:task
+    })
+
+    /* if(task?.userIdCreateTask == req.user.id)
+    {
+        const {userIdAssingTask} = req.body
+        if(userIdAssingTask != req.user.id)
+        {
+            await getConnection()
+                .createQueryBuilder()
+                .update(Task)
+                .set({userIdAssingTask})
+                .where("idTask= :id", {id})
+                .execute();
+            return res.json({
+                msg: "Assign success!",
+                taskAfterAssignment:task
+            })
+        }
+        return res.status(400).json({msg: "Do not add yourself to the task"})
+    }
+    return res.json({msg: "You do not have permission to specify the person to perform the task. You can only specify the person to perform the task created by you"}) */
+}
+/**********************************************************/
