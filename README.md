@@ -1,6 +1,6 @@
 # test_nodejs_api_todo
 
-# To run the application :
+# To run the application
 npm run dev
 
 # Migration Database
