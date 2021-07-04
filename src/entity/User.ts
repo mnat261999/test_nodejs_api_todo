@@ -5,7 +5,11 @@ import {
     PrimaryGeneratedColumn,
     Unique,
     UpdateDateColumn,
+    OneToMany
+
   } from 'typeorm';
+
+  import {Task} from './Task'
   
   @Entity()
   @Unique(['email'])
@@ -32,4 +36,7 @@ import {
     @Column()
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(type => Task, task => task.idTask) // note: we will create author property in the Photo class below
+    photos: Task[];
   }

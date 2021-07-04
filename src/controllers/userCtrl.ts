@@ -104,7 +104,7 @@ const createActivationToken = (payload:object) => {
 }
 
 const createAccessToken = (payload:object) => {
-    return jwt.sign(payload, <any>process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1d'})
+    return jwt.sign(payload, <any>process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
 }
 
 const createRefreshToken = (payload:object) => {

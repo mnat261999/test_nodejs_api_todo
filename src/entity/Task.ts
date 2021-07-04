@@ -23,8 +23,14 @@ import {
     @Column()
     dateCompletedTask: Date;
 
-    @Column({ default: "string"})
+    @Column()
     statusTask: string;
+
+    @Column()
+    userIdCreateTask: number;
+
+    @ManyToOne(type => User, user => user.idUser)
+    userIdAssingTask: User;
   
     @Column()
     @CreateDateColumn()
@@ -33,10 +39,4 @@ import {
     @Column()
     @UpdateDateColumn()
     updatedAtTask: Date;
-
-    @ManyToOne(type => User, user => user.idUser)
-    userIdCreateTask: User;
-
-    @ManyToOne(type => User, user => user.idUser)
-    userIdAssingTask: User;
   }
