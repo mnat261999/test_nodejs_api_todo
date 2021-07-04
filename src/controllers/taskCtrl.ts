@@ -51,7 +51,18 @@ export const deleteTask = async (req: Request, res: Response): Promise<Response>
     const id = req.params.id
     const task = await getRepository(Task).findOne(id)
     if(!task) return res.json({msg: "Task does not exist"})
-    
+
     await getRepository(Task).delete(req.params.id)
     return res.json({msg: "Delete success!"})
+}
+
+export const getAllTask = async (req: Request, res: Response): Promise<Response> =>{
+    const taskList = await getRepository(Task).find()
+    return res.json({taskList})
+}
+
+export const getTaskById = async (req: Request, res: Response): Promise<Response> =>{
+    const id = req.params.id
+    const taskById = await getRepository(Task).findOne(id)
+    return res.json({taskById})
 }

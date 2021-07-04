@@ -88,6 +88,11 @@ export const getAccessToken = async (req: Request, res: Response): Promise<Respo
     return res.json({access_token})
 }
 
+export const getAllUser = async (req: Request, res: Response): Promise<Response> =>{
+    const userList = await getRepository(User).find()
+    return res.json({userList})
+}
+
 function validateEmail(email:string) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
