@@ -63,7 +63,9 @@ export const deleteTask = async (req: Request, res: Response): Promise<Response>
 
 /*Câu 6*/
 export const getAllTask = async (req: Request, res: Response): Promise<Response> =>{
-    const taskList = await getRepository(Task).find()
+    const taskList = await getRepository(Task).find({
+        relations: ['userIdAssingTask']
+    })
     return res.json({taskList})
 }
 /**********************************************************/
