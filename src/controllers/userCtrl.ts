@@ -28,7 +28,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
     }
     /*******/
     const activation_token = createActivationToken(newUser)
-    const url = `http://localhost:3000/user/activate/${activation_token}`
+    const url = `http://localhost:8080/user/activate/${activation_token}`
 
             //console.log(url)
     sendEmail(email, url, "Verify your email address")
