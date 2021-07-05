@@ -46,7 +46,8 @@ B1: Setup your connection options properly in file "ormconfig.json"
         "src/entity/**/*.ts"
      ],
     "synchronize": true
-}```
+}
+```
 
 B2: Create model in folder Entity
 
