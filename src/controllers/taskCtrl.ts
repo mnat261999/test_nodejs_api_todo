@@ -73,7 +73,10 @@ export const getAllTask = async (req: Request, res: Response): Promise<Response>
 /*Câu 7*/
 export const getTaskById = async (req: Request, res: Response): Promise<Response> =>{
     const id = req.params.id
-    const taskById = await getRepository(Task).findOne(id)
+    const taskById = await getRepository(Task).findOne({
+        where: {idTask:id},
+        relations: ['userIdAssingTask']
+    })
     if(!taskById) return res.json({msg: "Task does not exist"})
     return res.json({taskById})
 }
@@ -96,10 +99,14 @@ export const assignUser = async (req: Request, res: Response): Promise<Response>
                 .set({userIdAssingTask})
                 .where("idTask= :id", {id})
                 .execute();
-            return res.json({
+    const taskById = await getRepository(Task).findOne({
+                    where: {idTask:id},
+                    relations: ['userIdAssingTask']
+                })
+    return res.json({
                 msg: "Assign success!",
-                taskAfterAssignment:task
-    })
+                taskAfterAssignment:taskById
+            })
 
     /* if(task?.userIdCreateTask == req.user.id)
     {
