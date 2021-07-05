@@ -33,7 +33,9 @@ Also, make sure you are using TypeScript version 3.3 or higher, and you have ena
 ## Migration
 
 B1: Setup your connection options properly in file "ormconfig.json"
-`{
+
+
+```{
     "type": "mysql",
     "host": "localhost",
     "port": DATABASE PORT, 
@@ -44,7 +46,7 @@ B1: Setup your connection options properly in file "ormconfig.json"
         "src/entity/**/*.ts"
      ],
     "synchronize": true
-}`
+}```
 
 B2: Create model in folder Entity
 
